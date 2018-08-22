@@ -3,11 +3,11 @@ project("socketdemo")
 add_definitions(-DUNICODE -D_UNICODE)
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 include_directories("XSocket/include")
-include_directories("TestLib/include")
+include_directories("XClient/include")
 add_subdirectory(XSocket)
-add_subdirectory(TestLib)
-
-add_subdirectory(TestSocket)
+add_subdirectory(XClient)
+add_subdirectory(TestClient)
+add_subdirectory(TestServer)
 
 
 

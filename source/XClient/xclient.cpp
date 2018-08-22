@@ -1,3 +1,3 @@
-#include "testlib.h"
+#include "xclient.h"
 TestLib::TestLib() {
 }

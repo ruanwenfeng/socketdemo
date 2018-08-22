@@ -26,7 +26,9 @@ SOCKET XSocket::createSocket() {
 }
 
 bool XSocket::listen(unsigned short port) {
-
+	if (0 >= mSocket) {
+		this->createSocket();
+	}
 	sockaddr_in saddr;
 	saddr.sin_family = AF_INET;
 	saddr.sin_port = htons(port);
@@ -64,18 +66,18 @@ XSocket XSocket::accept() {
 	xsocket.mIp = inet_ntoa(caddr.sin_addr);
 	xsocket.mPort = ntohs(caddr.sin_port);
 	xsocket.mSocket = client;
-	std::cout << "accept client " << client << " !" << std::endl;
-	std::cout << "client " << client << " ip is " << xsocket.mSocket
-		<< ",port is " << xsocket.mPort << " !"
+	std::cout << "accept client " << client << "!" << std::endl;
+	std::cout << "client " << client << " ip is " << xsocket.mIp
+		<< ",port is " << xsocket.mPort << "!"
 		<< std::endl;
 	return xsocket;
 }
 
-int XSocket::recv(char * buf, int bufsize) {
+int XSocket::recv(char * buf, int bufsize) const {
 	return ::recv(mSocket, buf, bufsize, 0);
 }
 
-int XSocket::send(const char * buf, int bufsize) {
+int XSocket::send(const char * buf, int bufsize) const {
 
 	int sendSize = 0;
 	while (sendSize != bufsize){
@@ -89,7 +91,24 @@ int XSocket::send(const char * buf, int bufsize) {
 	return sendSize;
 }
 
-void XSocket::close() {
+bool XSocket::connect(const char * ip, unsigned short port) {
+	if (0 == mSocket) {
+		this->createSocket();
+	}
+	sockaddr_in saddr;
+	saddr.sin_family = AF_INET;
+	saddr.sin_port = htons(port);
+	saddr.sin_addr.S_un.S_addr = inet_addr(ip);
+	if (0 != ::connect(mSocket, reinterpret_cast<sockaddr*>(&saddr), sizeof(saddr))) {
+		std::cout << "connect " << ip << ":" << port << " failed!" << std::endl;
+		return false;
+	}
+	std::cout << "connect " << ip << ":" << port << " success!" << std::endl;
+	return true;
+}
+
+void XSocket::close() const {
+
 	if (0 < mSocket)
 		::closesocket(mSocket);
 }

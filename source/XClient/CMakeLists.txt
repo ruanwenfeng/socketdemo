@@ -1,0 +1,6 @@
+﻿aux_source_directory(. SRC_LIST)
+include_directories(include)
+file(GLOB_RECURSE PROJECT_HEADERS include/*.h)
+ADD_DEFINITIONS(-DTEST_EXPORTS)
+add_library(XClient STATIC  ${SRC_LIST} ${PROJECT_HEADERS})
+target_link_libraries(XClient XSocket)
